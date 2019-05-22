@@ -14,7 +14,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
   }
   this.player = {
     x:40,
-    y:50,
+    y:250,
     color:[210,53,80],
     name:'NANI',
     radius:14,
@@ -23,13 +23,16 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     safe:false,
   }
   this.hideouts = [
-    [200,400],
-    [400,200],
-    [300,300],
+    [100,200],
+    [200,300],
+    [300,500],
+  ];
+  this.watchers = [
+
   ];
   this.background = T;
   this.keys = {};
-  $(document).keypress((e)=>this.keys[e.key.toLowerCase()] = e.type = true);
+  $(document).keydown((e)=>this.keys[e.key.toLowerCase()] = e.type = true);
   $(document).keyup((e) => this.keys[e.key.toLowerCase()] = false);
   this.perFrame = function() {
     that.context.canvas.width = innerWidth;
@@ -49,6 +52,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
           alpha = 0.6;
           that.player.color = [25,118,210];
           that.player.safe = true;
+          that.player.radarRadius = that.player.radius;
         }
         that.drawCircle(i[0],i[1],10,'rgba(25,118,210,'+alpha+')');
     });
@@ -74,11 +78,12 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     } if (that.keys['d'] || that.keys['arrowright']) {
       that.player.x += 2;
     }
+    requestAnimationFrame(that.perFrame)
   }
   this.elems.play.click(function() {
     that.elems.startup.hide();
     $(that.context.canvas).show();
-    setInterval(that.perFrame, 18);
+    requestAnimationFrame(that.perFrame);
   });
 }
 var game = new Game('#333');
