@@ -20,14 +20,38 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     radius:14,
     radarRadius:14,
     maxRadRadius:60,
+    safe:false,
   }
+  this.hideouts = [
+    [200,400],
+    [400,200],
+    [300,300],
+  ];
   this.background = T;
+  this.keys = {};
+  $(document).keypress((e)=>this.keys[e.key.toLowerCase()] = e.type = true);
+  $(document).keyup((e) => this.keys[e.key.toLowerCase()] = false);
   this.perFrame = function() {
     that.context.canvas.width = innerWidth;
     that.context.canvas.height = innerHeight;
     that.context.canvas.style.background = that.background;
     that.drawCircle(that.player.x, that.player.y, that.player.radarRadius, 'rgba('+that.player.color[0]+','+that.player.color[1]+','+that.player.color[2]+','+(1-that.player.radarRadius/that.player.maxRadRadius)+')');
     that.drawCircle(that.player.x, that.player.y, that.player.radius, 'rgb('+that.player.color[0]+','+that.player.color[1]+','+that.player.color[2]+')');
+    that.player.color = [210,53,80];
+    that.player.safe = false;
+    that.hideouts.forEach(function (i) {
+        var alpha = 0.021;
+        var distance = Math.sqrt((that.player.y - i[1])**2 + (that.player.x - i[0])**2);
+        if (distance < that.player.radarRadius + 10) {
+          alpha = 0.3;
+        }
+        if (distance < that.player.radius + 10) {
+          alpha = 0.6;
+          that.player.color = [25,118,210];
+          that.player.safe = true;
+        }
+        that.drawCircle(i[0],i[1],10,'rgba(25,118,210,'+alpha+')');
+    });
     that.player.radarRadius += 0.4;
     if (that.player.radarRadius >= that.player.maxRadRadius) {
       that.player.radarRadius = that.player.radius;
@@ -41,15 +65,16 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     } if (that.player.y > innerHeight - that.player.radius) {
       that.player.y = innerHeight - that.player.radius;
     }
-  }
-  $(document).keypress(function(e) {
-    key = e.key.toLowerCase();
-    if (key == 'w' || key == 'arrowup') {
+    if (that.keys['w'] || that.keys['arrowup']) {
       that.player.y -= 2;
-    } if (key == 's' || key == 'arrowdown') {
+    } if (that.keys['s'] || that.keys['arrowdown']) {
       that.player.y += 2;
+    } if (that.keys['a'] || that.keys['arrowleft']) {
+      that.player.x -= 2;
+    } if (that.keys['d'] || that.keys['arrowright']) {
+      that.player.x += 2;
     }
-  });
+  }
   this.elems.play.click(function() {
     that.elems.startup.hide();
     $(that.context.canvas).show();
