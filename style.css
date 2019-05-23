@@ -1,21 +1,39 @@
 body {
   margin:0;
   padding:0;
-  font-family:'Vollkorn', sans-serif;
+  font-family:'Roboto Mono', sans-serif;
   background:#28415a;
   overflow:hidden;
+}
+button {
+  font-family: 'Roboto Mono', sans-serif;
+  outline:none;
+  border:none;
+  cursor:pointer;
+  transition: 300ms;
+}
+.levelsbutton {
+  background:rgb(255,87,34);
+  width:50px;
+  height:50px;
+  margin:14px;
+}
+.levelsbutton:hover {
+  background:rgb(205,37,24);
+}
+#levels {
+  padding:50px;
 }
 #startup {
   padding:10px;
 }
 #startup button {
-  border:none;
   width:100px;
   height:40px;
   background:#d23550;
-  outline:none;
-  cursor:pointer;
-  transition: 300ms;
+}
+#startup h1 {
+  color:#d23550
 }
 #startup button:hover {
   background:#c22540;

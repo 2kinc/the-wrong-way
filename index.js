@@ -14,33 +14,9 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     that.context.fill();
   };
   noise.seed(Math.random());
-  this.player = {
-    x:40,
-    y:250,
-    color:[210,53,80],
-    name:'NANI',
-    radius:14,
-    radarRadius:14,
-    maxRadRadius:60,
-    safe:false,
-  }
-  this.hideouts = [
-    {x:40,y:250},
-    {x:100,y:200},
-    {x:200,y:300},
-    {x:300,y:500},
-    {x:400,y:400},
-    {x:500,y:100},
-    {x:600,y:600},
-  ];
-  this.watchers = [
-    {x:150,y:16,movingdown:true,speed:3,rr:16,maxrr:62,noise:0},
-    {x:250,y:innerHeight-16,movingdown:false,speed:6,rr:16,maxrr:62,noise:20},
-    {x:350,y:16,movingdown:true,speed:2,rr:16,maxrr:62,noise:40},
-    {x:450,y:innerHeight-16,movingdown:false,speed:4,rr:16,maxrr:62,noise:60},
-    {x:550,y:16,movingdown:true,speed:5.5,rr:16,maxrr:62,noise:80},
-    {x:650,y:innerHeight-16,movingdown:false,speed:5,rr:16,maxrr:62,noise:100},
-  ];
+  this.player = {};
+  this.hideouts = [];
+  this.watchers = [];
   this.background = T;
   this.keys = {};
   $(document).keydown((e)=>this.keys[e.key.toLowerCase()] = e.type = true);
@@ -113,11 +89,50 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     }
     requestAnimationFrame(that.perFrame)
   }
+  this.Level = function(ob) {
+    cancelAnimationFrame(that.perFrame);
+    that.player = ob.player;
+    that.hideouts = ob.hideouts;
+    that.watchers = ob.watchers;
+    requestAnimationFrame(that.perFrame);
+  }
+  this.levels = [
+    {player:{
+      x:40,
+      y:250,
+      color:[210,53,80],
+      name:'NANI',
+      radius:14,
+      radarRadius:14,
+      maxRadRadius:60,
+      safe:false,
+    },hideouts:[
+      {x:40,y:250},
+      {x:100,y:200},
+      {x:200,y:300},
+      {x:300,y:500},
+      {x:400,y:400},
+      {x:500,y:100},
+      {x:600,y:600},
+    ],watchers:[
+      {x:150,y:16,speed:3,rr:16,maxrr:62,noise:0},
+      {x:250,y:innerHeight-16,speed:6,rr:16,maxrr:62,noise:20},
+      {x:350,y:16,speed:2,rr:16,maxrr:62,noise:40},
+      {x:450,y:innerHeight-16,speed:4,rr:16,maxrr:62,noise:60},
+      {x:550,y:16,speed:5.5,rr:16,maxrr:62,noise:80},
+      {x:650,y:innerHeight-16,speed:5,rr:16,maxrr:62,noise:100},
+    ]}
+  ]
   this.elems.play.click(function() {
     that.elems.startup.hide();
-    $(that.context.canvas).show();
-    requestAnimationFrame(that.perFrame);
-    //that.elems.levels.show();
+    that.elems.levels.show();
   });
+  $('.levelsbutton').each(function(a,b) {
+    $(b).click(function(){
+      that.Level(that.levels[a]);
+      that.elems.levels.hide();
+      $(that.context.canvas).show();
+    });
+  })
 }
 var game = new Game('#333');
