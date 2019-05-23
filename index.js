@@ -47,8 +47,8 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
       var distance = Math.sqrt((that.player.y - i.y)**2 + (that.player.x - i.x)**2);
       i.noise+=i.speed/10000;
       if (distance < that.player.radius + i.rr && !that.player.safe) {
-        i.x += that.player.x - i.x;
-        i.y += that.player.y - i.y;
+        i.x += (that.player.x - i.x)/(i.speed/10000);
+        i.y += (that.player.y - i.y)/(i.speed/10000);console.log('hi');
       } else {
         i.y = Math.abs(noise.simplex2(i.noise,i.noise))*innerHeight+16;
         i.x = Math.abs(noise.simplex2(i.noise+1000,i.noise+1000))*innerWidth+16;

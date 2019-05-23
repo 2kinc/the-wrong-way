@@ -4,6 +4,7 @@ body {
   font-family:'Roboto Mono', sans-serif;
   background:#28415a;
   overflow:hidden;
+  user-select: none;
 }
 button {
   font-family: 'Roboto Mono', sans-serif;
@@ -20,6 +21,10 @@ button {
 }
 .levelsbutton:hover {
   background:rgb(205,37,24);
+}
+.levelsbutton:disabled {
+  background:grey;
+  color:black;
 }
 #levels {
   padding:50px;
