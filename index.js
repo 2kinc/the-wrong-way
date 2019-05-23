@@ -28,7 +28,12 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     [300,500],
   ];
   this.watchers = [
-
+    [150,16,true,3,16,62],
+    [250,innerHeight-16,false,6,16,62],
+    [350,16,true,2,16,62],
+    [450,innerHeight-16,false,4,16,62],
+    [550,16,true,5.5,16,62],
+    [650,innerHeight-16,false,5,16,62],
   ];
   this.background = T;
   this.keys = {};
@@ -56,6 +61,28 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
         }
         that.drawCircle(i[0],i[1],10,'rgba(25,118,210,'+alpha+')');
     });
+    that.watchers.forEach(function (i) {
+      var distance = Math.sqrt((that.player.y - i[1])**2 + (that.player.x - i[0])**2);
+      i[1] = (i[2]) ? i[1] + i[3] : (true) ? i[1] - i[3] : 0;
+      if (i[1] < 16) {
+        i[2] = true;
+      } if (i[1] > innerHeight - 16) {
+        i[2] = false;
+      };
+      if (distance < that.player.radius + i[4]) {
+        console.log('hi')
+      }
+      if (distance < that.player.radius + 10 && !that.player.safe) {
+        that.player.x = 40;
+        that.player.y = 250;
+      }
+      i[4] += 0.4;
+      if (i[4] >= i[5]) {
+        i[4] = 16;
+      }
+      that.drawCircle(i[0],i[1],i[4],'rgba(244,81,30,'+(1-i[4]/i[5])+')');
+      that.drawCircle(i[0],i[1],16,'rgb(244,81,30)');
+    });
     that.player.radarRadius += 0.4;
     if (that.player.radarRadius >= that.player.maxRadRadius) {
       that.player.radarRadius = that.player.radius;
@@ -64,6 +91,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
       that.player.x = that.player.radius;
     } if (that.player.x > innerHeight - that.player.radius) {
       that.player.x = innerHeight - that.player.radius;
+      cancelAnimationFrame(that.perFrame);
     } if (that.player.y < that.player.radius) {
       that.player.y = that.player.radius;
     } if (that.player.y > innerHeight - that.player.radius) {
