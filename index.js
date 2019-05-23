@@ -12,7 +12,8 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     that.context.arc(x, y, r, 0, Math.PI * 2);
     that.context.fillStyle = c;
     that.context.fill();
-  }
+  };
+  noise.seed(Math.random());
   this.player = {
     x:40,
     y:250,
@@ -24,6 +25,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     safe:false,
   }
   this.hideouts = [
+    {x:40,y:250},
     {x:100,y:200},
     {x:200,y:300},
     {x:300,y:500},
@@ -32,12 +34,12 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     {x:600,y:600},
   ];
   this.watchers = [
-    {x:150,y:16,movingdown:true,speed:3,rr:16,maxrr:62},
-    {x:250,y:innerHeight-16,movingdown:false,speed:6,rr:16,maxrr:62},
-    {x:350,y:16,movingdown:true,speed:2,rr:16,maxrr:62},
-    {x:450,y:innerHeight-16,movingdown:false,speed:4,rr:16,maxrr:62},
-    {x:550,y:16,movingdown:true,speed:5.5,rr:16,maxrr:62},
-    {x:650,y:innerHeight-16,movingdown:false,speed:5,rr:16,maxrr:62},
+    {x:150,y:16,movingdown:true,speed:3,rr:16,maxrr:62,noise:0},
+    {x:250,y:innerHeight-16,movingdown:false,speed:6,rr:16,maxrr:62,noise:20},
+    {x:350,y:16,movingdown:true,speed:2,rr:16,maxrr:62,noise:40},
+    {x:450,y:innerHeight-16,movingdown:false,speed:4,rr:16,maxrr:62,noise:60},
+    {x:550,y:16,movingdown:true,speed:5.5,rr:16,maxrr:62,noise:80},
+    {x:650,y:innerHeight-16,movingdown:false,speed:5,rr:16,maxrr:62,noise:100},
   ];
   this.background = T;
   this.keys = {};
@@ -67,14 +69,13 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     });
     that.watchers.forEach(function (i) {
       var distance = Math.sqrt((that.player.y - i.y)**2 + (that.player.x - i.x)**2);
-      i.y = (i.movingdown) ? i.y + i.speed : (true) ? i.y - i.speed : 0;
-      if (i.y < 16) {
-        i.movingdown = true;
-      } if (i.y > innerHeight - 16) {
-        i.movingdown = false;
-      };
-      if (distance < that.player.radius + i[4]) {
-        console.log('hi')
+      i.noise+=i.speed/10000;
+      if (distance < that.player.radius + i.rr && !that.player.safe) {
+        i.x += that.player.x - i.x;
+        i.y += that.player.y - i.y;
+      } else {
+        i.y = Math.abs(noise.simplex2(i.noise,i.noise))*innerHeight+16;
+        i.x = Math.abs(noise.simplex2(i.noise+1000,i.noise+1000))*innerWidth+16;
       }
       if (distance < that.player.radius + 10 && !that.player.safe) {
         that.player.x = 40;
@@ -93,8 +94,8 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     }
     if (that.player.x < that.player.radius) {
       that.player.x = that.player.radius;
-    } if (that.player.x > innerHeight - that.player.radius) {
-      that.player.x = innerHeight - that.player.radius;
+    } if (that.player.x > innerWidth - that.player.radius) {
+      that.player.x = innerWidth - that.player.radius;
       return;
     } if (that.player.y < that.player.radius) {
       that.player.y = that.player.radius;
