@@ -1,4 +1,4 @@
-// v1.0.0
+// The Wrong Way v1.0.0
 function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
   var that = this;
   this.elems = {
@@ -26,6 +26,9 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     [100,200],
     [200,300],
     [300,500],
+    [400,400],
+    [500,100],
+    [600,600],
   ];
   this.watchers = [
     [150,16,true,3,16,62],
@@ -80,8 +83,8 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
       if (i[4] >= i[5]) {
         i[4] = 16;
       }
-      that.drawCircle(i[0],i[1],i[4],'rgba(244,81,30,'+(1-i[4]/i[5])+')');
-      that.drawCircle(i[0],i[1],16,'rgb(244,81,30)');
+      that.drawCircle(i[0],i[1],i[4],'rgba(29, 138, 34,'+(1-i[4]/i[5])+')');
+      that.drawCircle(i[0],i[1],16,'rgb(29, 138, 34)');
     });
     that.player.radarRadius += 0.4;
     if (that.player.radarRadius >= that.player.maxRadRadius) {
@@ -91,7 +94,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
       that.player.x = that.player.radius;
     } if (that.player.x > innerHeight - that.player.radius) {
       that.player.x = innerHeight - that.player.radius;
-      cancelAnimationFrame(that.perFrame);
+      return;
     } if (that.player.y < that.player.radius) {
       that.player.y = that.player.radius;
     } if (that.player.y > innerHeight - that.player.radius) {
