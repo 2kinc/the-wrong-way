@@ -24,20 +24,20 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     safe:false,
   }
   this.hideouts = [
-    [100,200],
-    [200,300],
-    [300,500],
-    [400,400],
-    [500,100],
-    [600,600],
+    {x:100,y:200},
+    {x:200,y:300},
+    {x:300,y:500},
+    {x:400,y:400},
+    {x:500,y:100},
+    {x:600,y:600},
   ];
   this.watchers = [
-    [150,16,true,3,16,62],
-    [250,innerHeight-16,false,6,16,62],
-    [350,16,true,2,16,62],
-    [450,innerHeight-16,false,4,16,62],
-    [550,16,true,5.5,16,62],
-    [650,innerHeight-16,false,5,16,62],
+    {x:150,y:16,movingdown:true,speed:3,rr:16,maxrr:62},
+    {x:250,y:innerHeight-16,movingdown:false,speed:6,rr:16,maxrr:62},
+    {x:350,y:16,movingdown:true,speed:2,rr:16,maxrr:62},
+    {x:450,y:innerHeight-16,movingdown:false,speed:4,rr:16,maxrr:62},
+    {x:550,y:16,movingdown:true,speed:5.5,rr:16,maxrr:62},
+    {x:650,y:innerHeight-16,movingdown:false,speed:5,rr:16,maxrr:62},
   ];
   this.background = T;
   this.keys = {};
@@ -53,7 +53,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     that.player.safe = false;
     that.hideouts.forEach(function (i) {
         var alpha = 0.021;
-        var distance = Math.sqrt((that.player.y - i[1])**2 + (that.player.x - i[0])**2);
+        var distance = Math.sqrt((that.player.y - i.y)**2 + (that.player.x - i.x)**2);
         if (distance < that.player.radarRadius + 10) {
           alpha = 0.3;
         }
@@ -63,15 +63,15 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
           that.player.safe = true;
           that.player.radarRadius = that.player.radius;
         }
-        that.drawCircle(i[0],i[1],10,'rgba(25,118,210,'+alpha+')');
+        that.drawCircle(i.x,i.y,10,'rgba(25,118,210,'+alpha+')');
     });
     that.watchers.forEach(function (i) {
-      var distance = Math.sqrt((that.player.y - i[1])**2 + (that.player.x - i[0])**2);
-      i[1] = (i[2]) ? i[1] + i[3] : (true) ? i[1] - i[3] : 0;
-      if (i[1] < 16) {
-        i[2] = true;
-      } if (i[1] > innerHeight - 16) {
-        i[2] = false;
+      var distance = Math.sqrt((that.player.y - i.y)**2 + (that.player.x - i.x)**2);
+      i.y = (i.movingdown) ? i.y + i.speed : (true) ? i.y - i.speed : 0;
+      if (i.y < 16) {
+        i.movingdown = true;
+      } if (i.y > innerHeight - 16) {
+        i.movingdown = false;
       };
       if (distance < that.player.radius + i[4]) {
         console.log('hi')
@@ -80,12 +80,12 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
         that.player.x = 40;
         that.player.y = 250;
       }
-      i[4] += 0.4;
-      if (i[4] >= i[5]) {
-        i[4] = 16;
+      i.rr += 0.4;
+      if (i.rr >= i.maxrr) {
+        i.rr = 16;
       }
-      that.drawCircle(i[0],i[1],i[4],'rgba(29, 138, 34,'+(1-i[4]/i[5])+')');
-      that.drawCircle(i[0],i[1],16,'rgb(29, 138, 34)');
+      that.drawCircle(i.x,i.y,i.rr,'rgba(29, 138, 34,'+(1-i.rr/i.maxrr)+')');
+      that.drawCircle(i.x,i.y,16,'rgb(29, 138, 34)');
     });
     that.player.radarRadius += 0.4;
     if (that.player.radarRadius >= that.player.maxRadRadius) {
@@ -114,6 +114,8 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
   }
   this.elems.play.click(function() {
     that.elems.startup.hide();
+    $(that.context.canvas).show();
+    requestAnimationFrame(that.perFrame);
     //that.elems.levels.show();
   });
 }
