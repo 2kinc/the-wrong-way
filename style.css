@@ -15,9 +15,10 @@ button {
 }
 .levelsbutton {
   background:rgb(255,87,34);
-  width:50px;
-  height:50px;
-  margin:14px;
+  width: 3em;
+  height: 3em;
+  margin: 5.5%;
+  font-size: 25.5px;
 }
 .levelsbutton:hover {
   background:rgb(205,37,24);
@@ -25,9 +26,10 @@ button {
 .levelsbutton:disabled {
   background:grey;
   color:black;
+  cursor:default;
 }
 #levels {
-  padding:50px;
+  width:100%;
 }
 #startup {
   padding:10px;
@@ -42,4 +44,41 @@ button {
 }
 #startup button:hover {
   background:#c22540;
+}
+#gamedialog {
+  left: 25%;
+  top: 25%;
+  position: fixed;
+  width: 500px;
+  height: 350px;
+  background: #d23550;
+  text-align:center;
+  opacity:0;
+  z-index:500;
+  transition: 300ms;
+  display:none;
+}
+#points {
+  font-size: 300%;
+  top: 50px;
+  position: absolute;
+  width: 100%;
+}
+#buttons {
+  bottom: 25px;
+  width: 100%;
+  position: absolute;
+}
+#scrim {
+  background: rgba(0,0,0,0.2);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top:0;
+  left:0;
+  z-index:-999999;
+  display:inherit;
+}
+#gamedialog+#scrim {
+  display:block
 }

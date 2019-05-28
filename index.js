@@ -4,7 +4,8 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
   this.elems = {
     play:$('#play'),
     levels:$('#levels'),
-    startup:$('#startup')
+    startup:$('#startup'),
+    game:$('#game')
   }
   this.context = $('canvas')[0].getContext('2d');
   this.drawCircle = function(x, y, r, c) {
@@ -19,6 +20,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
   this.watchers = [];
   this.background = T;
   this.keys = {};
+  this.points = 0;
   $(document).keydown((e)=>this.keys[e.key.toLowerCase()] = e.type = true);
   $(document).keyup((e) => this.keys[e.key.toLowerCase()] = false);
   this.perFrame = function() {
@@ -47,8 +49,12 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
       var distance = Math.sqrt((that.player.y - i.y)**2 + (that.player.x - i.x)**2);
       i.noise+=i.speed/10000;
       if (distance < that.player.radius + i.rr && !that.player.safe) {
-        i.x += (that.player.x - i.x)/(i.speed/10000);
-        i.y += (that.player.y - i.y)/(i.speed/10000);console.log('hi');
+        i.followplayer = true;
+      }
+      if (i.followplayer) {
+        i.followplayer = true;
+        i.x += (that.player.x - i.x)/(i.speed*4);
+        i.y += (that.player.y - i.y)/(i.speed*4);
       } else {
         i.y = Math.abs(noise.simplex2(i.noise,i.noise))*innerHeight+16;
         i.x = Math.abs(noise.simplex2(i.noise+1000,i.noise+1000))*innerWidth+16;
@@ -56,6 +62,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
       if (distance < that.player.radius + 10 && !that.player.safe) {
         that.player.x = 40;
         that.player.y = 250;
+        i.followplayer = false;
       }
       i.rr += 0.4;
       if (i.rr >= i.maxrr) {
@@ -72,6 +79,12 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
       that.player.x = that.player.radius;
     } if (that.player.x > innerWidth - that.player.radius) {
       that.player.x = innerWidth - that.player.radius;
+      $('#gamedialog').show().css('opacity',1);
+      $('#diabtn').text('Levels').click(function() {
+        that.elems.levels.show();
+        that.elems.game.hide();
+        $('#gamedialog').hide().css('opacity',0);
+      });
       return;
     } if (that.player.y < that.player.radius) {
       that.player.y = that.player.radius;
@@ -96,33 +109,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     that.watchers = ob.watchers;
     requestAnimationFrame(that.perFrame);
   }
-  this.levels = [
-    {player:{
-      x:40,
-      y:250,
-      color:[210,53,80],
-      name:'NANI',
-      radius:14,
-      radarRadius:14,
-      maxRadRadius:60,
-      safe:false,
-    },hideouts:[
-      {x:40,y:250},
-      {x:100,y:200},
-      {x:200,y:300},
-      {x:300,y:500},
-      {x:400,y:400},
-      {x:500,y:100},
-      {x:600,y:600},
-    ],watchers:[
-      {x:150,y:16,speed:3,rr:16,maxrr:62,noise:0},
-      {x:250,y:innerHeight-16,speed:6,rr:16,maxrr:62,noise:20},
-      {x:350,y:16,speed:2,rr:16,maxrr:62,noise:40},
-      {x:450,y:innerHeight-16,speed:4,rr:16,maxrr:62,noise:60},
-      {x:550,y:16,speed:5.5,rr:16,maxrr:62,noise:80},
-      {x:650,y:innerHeight-16,speed:5,rr:16,maxrr:62,noise:100},
-    ]}
-  ]
+  this.levels = h;
   this.elems.play.click(function() {
     that.elems.startup.hide();
     that.elems.levels.show();
@@ -131,8 +118,59 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     $(b).click(function(){
       that.Level(that.levels[a]);
       that.elems.levels.hide();
-      $(that.context.canvas).show();
+      that.elems.game.show();
     });
   })
 }
-var game = new Game('#333');
+var game = new Game('#333', [
+  {player:{
+    x:40,
+    y:250,
+    color:[210,53,80],
+    name:'NANI',
+    radius:14,
+    radarRadius:14,
+    maxRadRadius:60,
+    safe:false,
+  },hideouts:[
+    {x:40,y:250},
+    {x:100,y:200},
+    {x:200,y:300},
+    {x:300,y:500},
+    {x:400,y:400},
+    {x:500,y:100},
+    {x:600,y:600},
+  ],watchers:[
+    {x:150,y:16,speed:3,rr:16,maxrr:62,noise:0,followplayer:false},
+    {x:250,y:16,speed:6,rr:16,maxrr:62,noise:20,followplayer:false},
+    {x:350,y:16,speed:2,rr:16,maxrr:62,noise:40,followplayer:false},
+    {x:450,y:16,speed:4,rr:16,maxrr:62,noise:60,followplayer:false},
+    {x:550,y:16,speed:7,rr:16,maxrr:62,noise:80,followplayer:false},
+    {x:650,y:16,speed:5,rr:16,maxrr:62,noise:100,followplayer:false},
+  ]},
+  {player:{
+    x:40,
+    y:250,
+    color:[210,53,80],
+    name:'NANI',
+    radius:14,
+    radarRadius:14,
+    maxRadRadius:60,
+    safe:false,
+  },hideouts:[
+    {x:40,y:250},
+    {x:100,y:200},
+    {x:200,y:300},
+    {x:300,y:500},
+    {x:400,y:400},
+    {x:500,y:100},
+    {x:600,y:600},
+  ],watchers:[
+    {x:150,y:16,speed:3,rr:16,maxrr:62,noise:0,followplayer:false},
+    {x:250,y:16,speed:6,rr:16,maxrr:62,noise:20,followplayer:false},
+    {x:350,y:16,speed:2,rr:16,maxrr:62,noise:40,followplayer:false},
+    {x:450,y:16,speed:4,rr:16,maxrr:62,noise:60,followplayer:false},
+    {x:550,y:16,speed:7,rr:16,maxrr:62,noise:80,followplayer:false},
+    {x:650,y:16,speed:5,rr:16,maxrr:62,noise:100,followplayer:false},
+  ]}
+]);

@@ -8,6 +8,13 @@
     <title>The Wrong Way</title>
   </head>
   <body>
+    <div id="gamedialog">
+      <div id="points">10,000,000,000</div>
+      <div id="buttons">
+        <button id="diabtn">Try again / Levels</button>
+      </div>
+      <div id="scrim"></div>
+    </div>
     <div id="startup">
       <h1>The Wrong Way</h1>
       <button id="play">Play</button>
@@ -24,7 +31,9 @@
       <button class="levelsbutton" disabled=true>9</button>
       <button class="levelsbutton" disabled=true>10</button>
     </div>
-    <canvas style="display:none;">You really need a better browser! Canvas is not supported.</canvas>
+    <div id="game" style="display:none;">
+      <canvas>You really need a better browser! Canvas is not supported.</canvas>
+    </div>
     <script src="https://cdn.jsdelivr.net/gh/josephg/noisejs/perlin.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="index.js"></script>
