@@ -55,7 +55,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
       if (distance < that.player.radius + i.rr && !that.player.safe) {
         i.followplayer = true;
       }
-      if (i.followplayer && !safe) {
+      if (i.followplayer && !that.player.safe) {
         i.followplayer = true;
         i.x += (that.player.x - i.x)/(i.speed*4);
         i.y += (that.player.y - i.y)/(i.speed*4);
