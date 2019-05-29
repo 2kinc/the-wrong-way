@@ -54,12 +54,9 @@ button {
   background:#c22540;
 }
 #gamedialog {
-  left: 25%;
-  top: 25%;
   position: fixed;
   width: 100%;
   height: 100%;
-  background: #d23550;
   text-align:center;
   opacity:0;
   z-index:500;
