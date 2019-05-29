@@ -1,4 +1,4 @@
-// The Wrong Way v1.0.0
+// The Wrong Way v0.8.0
 function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
   var that = this;
   this.elems = {
@@ -41,6 +41,10 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
           alpha = 0.6;
           that.player.color = [25,118,210];
           that.player.safe = true;
+          if (!i.clctd) {
+            that.points += i.points;
+            i.clctd = true;
+          }
           that.player.radarRadius = that.player.radius;
         }
         that.drawCircle(i.x,i.y,10,'rgba(25,118,210,'+alpha+')');
@@ -80,6 +84,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     } if (that.player.x > innerWidth - that.player.radius) {
       that.player.x = innerWidth - that.player.radius;
       $('#gamedialog').show().css('opacity',1);
+      $('#points').text(that.points);
       $('#diabtn').text('Levels').click(function() {
         that.elems.levels.show();
         that.elems.game.hide();
@@ -127,19 +132,18 @@ var game = new Game('#333', [
     x:40,
     y:250,
     color:[210,53,80],
-    name:'NANI',
     radius:14,
     radarRadius:14,
     maxRadRadius:60,
     safe:false,
   },hideouts:[
-    {x:40,y:250},
-    {x:100,y:200},
-    {x:200,y:300},
-    {x:300,y:500},
-    {x:400,y:400},
-    {x:500,y:100},
-    {x:600,y:600},
+    {x:40,y:250,points:0,clctd:false},
+    {x:100,y:200,points:20,clctd:false},
+    {x:200,y:300,points:20,clctd:false},
+    {x:300,y:500,points:20,clctd:false},
+    {x:400,y:400,points:30,clctd:false},
+    {x:500,y:100,points:40,clctd:false},
+    {x:600,y:600,points:20,clctd:false},
   ],watchers:[
     {x:150,y:16,speed:3,rr:16,maxrr:62,noise:0,followplayer:false},
     {x:250,y:16,speed:6,rr:16,maxrr:62,noise:20,followplayer:false},
@@ -148,29 +152,4 @@ var game = new Game('#333', [
     {x:550,y:16,speed:7,rr:16,maxrr:62,noise:80,followplayer:false},
     {x:650,y:16,speed:5,rr:16,maxrr:62,noise:100,followplayer:false},
   ]},
-  {player:{
-    x:40,
-    y:250,
-    color:[210,53,80],
-    name:'NANI',
-    radius:14,
-    radarRadius:14,
-    maxRadRadius:60,
-    safe:false,
-  },hideouts:[
-    {x:40,y:250},
-    {x:100,y:200},
-    {x:200,y:300},
-    {x:300,y:500},
-    {x:400,y:400},
-    {x:500,y:100},
-    {x:600,y:600},
-  ],watchers:[
-    {x:150,y:16,speed:3,rr:16,maxrr:62,noise:0,followplayer:false},
-    {x:250,y:16,speed:6,rr:16,maxrr:62,noise:20,followplayer:false},
-    {x:350,y:16,speed:2,rr:16,maxrr:62,noise:40,followplayer:false},
-    {x:450,y:16,speed:4,rr:16,maxrr:62,noise:60,followplayer:false},
-    {x:550,y:16,speed:7,rr:16,maxrr:62,noise:80,followplayer:false},
-    {x:650,y:16,speed:5,rr:16,maxrr:62,noise:100,followplayer:false},
-  ]}
 ]);
