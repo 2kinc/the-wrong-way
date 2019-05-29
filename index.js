@@ -64,8 +64,8 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
         i.x = Math.abs(noise.simplex2(i.noise+1000,i.noise+1000))*innerWidth+16;
       }
       if (distance < that.player.radius + 10 && !that.player.safe) {
-        that.player.x = 40;
-        that.player.y = 250;
+        that.player.x = that.hideouts[0].x;
+        that.player.y = that.hideouts[0].y;
         i.followplayer = false;
       }
       i.rr += 0.4;
