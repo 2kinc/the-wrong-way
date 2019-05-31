@@ -114,7 +114,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
         $($('#stars').children()[1]).css('fill','yellow');
         $($('#stars').children()[2]).css('fill','yellow');
       }
-      var points = 0;
+      that.points = 0;
       return;
     } if (that.player.y < that.player.radius) {
       that.player.y = that.player.radius;
@@ -148,7 +148,15 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     if (a.locked) el.prop("disabled",true)
     that.elems.levels.append(el);
   });
-  $('#levelsbtn').text('Levels').click(function() {
+  $('#redobtn').click(function() {
+    that.Level(that.levels[that.currentLevel]);
+    $('#gamedialog').hide().css('opacity',0);
+  });
+  $('#nextbtn').click(function() {
+    that.Level(that.levels[++that.currentLevel]);
+    $('#gamedialog').hide().css('opacity',0);
+  });
+  $('#levelsbtn').click(function() {
     that.elems.levels.show();
     that.elems.game.hide();
     $('#gamedialog').hide().css('opacity',0);
