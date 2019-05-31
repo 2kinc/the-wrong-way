@@ -103,7 +103,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
       var maxpoints = 0;
       that.hideouts.forEach(function(i) {i.clctd = false;maxpoints+=i.points;});
       that.levels[that.currentLevel+1].locked = false;
-      $($('#levels').children()[that.currentLevel]).prop("disabled",false);
+      $($('#levels').children()[that.currentLevel+1]).prop("disabled",false);
       if (that.points > maxpoints*(1/4)) {
         $($('#stars').children()[0]).css('fill','yellow');
       } if (that.points > maxpoints*(1/2)) {
