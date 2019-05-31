@@ -10,9 +10,15 @@ body {
   width: 500px;
   height: 350px;
   position: absolute;
-  top: 25%;
-  left: 25%;
   background: #d23550;
+}
+#stars {
+  font-size: 300%;
+  top: 90px;
+  width: 100%;
+  height: 80px;
+  flex-grow: 27;
+  position: relative;
 }
 button {
   font-family: 'Roboto Mono', sans-serif;
@@ -62,28 +68,24 @@ button {
   z-index:500;
   transition: 300ms;
   display:none;
+  opacity: 1;
+  justify-content: center;
+  background: rgba(0,0,0,0.3);
+  align-items: center;
 }
 #points {
   font-size: 300%;
   top: 50px;
-  position: absolute;
   width: 100%;
+  height: 50px;
+  flex-grow: 27;
+  position: relative;
 }
 #buttons {
-  bottom: 25px;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  position: absolute;
-}
-#scrim {
-  background: rgba(0,0,0,0.2);
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  top:0;
-  left:0;
-  z-index:-999999;
-  display:inherit;
-}
-#gamedialog+#scrim {
-  display:block
+  top: 180px;
+  position: relative;
+  margin:5px;
 }
