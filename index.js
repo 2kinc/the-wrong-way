@@ -14,10 +14,28 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     that.context.fillStyle = c;
     that.context.fill();
   };
+  this.drawRect = function(x, y, w, h, c) {
+    that.context.beginPath();
+    that.context.rect(x, y, w, h);
+    that.context.fillStyle = c;
+    that.context.fill();
+  };
+  this.rectcirclecoll = function (circle,rect){
+    var distX = Math.abs(circle.x - rect.x-rect.width/2);
+    var distY = Math.abs(circle.y - rect.y-rect.height/2);
+    if (distX > (rect.width/2 + circle.radius)) { return false; }
+    if (distY > (rect.height/2 + circle.radius)) { return false; }
+    if (distX <= (rect.width/2)) { return true; }
+    if (distY <= (rect.height/2)) { return true; }
+    var dx=distX-rect.width/2;
+    var dy=distY-rect.height/2;
+    return (dx**2+dy**2<=(circle.radius**2));
+  }
   noise.seed(Math.random());
   this.player = {};
   this.hideouts = [];
   this.watchers = [];
+  this.obstacles = [];
   this.background = T;
   this.keys = {};
   this.points = 0;
@@ -50,6 +68,11 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
           that.player.radarRadius = that.player.radius;
         }
         that.drawCircle(i.x,i.y,10,'rgba(25,118,210,'+alpha+')');
+    });
+    that.obstacles.forEach(function (i) {
+        if (i.type == 'rect') {
+          that.drawRect(i.x,i.y,i.width,i.height,i.color);
+        }
     });
     that.watchers.forEach(function (i) {
       var distance = Math.sqrt((that.player.y - i.y)**2 + (that.player.x - i.x)**2);
@@ -122,13 +145,29 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
       that.player.y = innerHeight - that.player.radius;
     }
     if (that.keys['w'] || that.keys['arrowup']) {
-      that.player.y -= 2;
+      var move = true;
+      that.obstacles.forEach(function (i) {
+          if (i.type == 'rect') if (that.rectcirclecoll(that.player,i) && !((that.player.y+that.player.radius) - i.y == 0)) move = false;
+      });
+      if (move) that.player.y -= 2;
     } if (that.keys['s'] || that.keys['arrowdown']) {
-      that.player.y += 2;
+      var move = true;
+      that.obstacles.forEach(function (i) {
+          if (i.type == 'rect') if (that.rectcirclecoll(that.player,i) && !((i.y+i.height)-(that.player.y) < 0)) move = false;
+      });
+      if (move) that.player.y += 2;
     } if (that.keys['a'] || that.keys['arrowleft']) {
-      that.player.x -= 2;
+      var move = true;
+      that.obstacles.forEach(function (i) {
+          if (i.type == 'rect') if (that.rectcirclecoll(that.player,i) && !((that.player.x+that.player.radius) - i.x == 0)) move = false;
+      });
+      if (move) that.player.x -= 2;
     } if (that.keys['d'] || that.keys['arrowright']) {
-      that.player.x += 2;
+      var move = true;
+      that.obstacles.forEach(function (i) {
+          if (i.type == 'rect') if (that.rectcirclecoll(that.player,i) && !((i.x+i.width)-(that.player.x) < 0)) move = false;
+      });
+      if (move) that.player.x += 2;
     }
     requestAnimationFrame(that.perFrame)
   };
@@ -137,6 +176,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     that.player = ob.player;
     that.hideouts = ob.hideouts;
     that.watchers = ob.watchers;
+    that.obstacles = ob.obstacles;
     requestAnimationFrame(that.perFrame);
   };
   this.elems.play.click(function() {
@@ -198,6 +238,8 @@ var game = new Game('#333', [
       {x:450,y:16,speed:4,rr:16,maxrr:62,noise:60,followplayer:false},
       {x:550,y:16,speed:7,rr:16,maxrr:62,noise:80,followplayer:false},
       {x:650,y:16,speed:5,rr:16,maxrr:62,noise:100,followplayer:false},
+    ],obstacles:[
+
     ]
   },{
     completed:false,
@@ -220,12 +262,15 @@ var game = new Game('#333', [
       {x:500,y:100,points:40,clctd:false},
       {x:600,y:600,points:20,clctd:false},
     ],watchers:[
-      {x:150,y:16,speed:2.2,rr:16,maxrr:62,noise:0,followplayer:false},
-      {x:250,y:16,speed:2.1,rr:16,maxrr:62,noise:20,followplayer:false},
-      {x:350,y:16,speed:1.9,rr:16,maxrr:62,noise:40,followplayer:false},
-      {x:450,y:16,speed:1.8,rr:16,maxrr:62,noise:60,followplayer:false},
-      {x:550,y:16,speed:2.3,rr:16,maxrr:100,noise:80,followplayer:false},
-      {x:650,y:16,speed:1.7,rr:16,maxrr:62,noise:170,followplayer:false},
+      {x:150,y:16,speed:2.2,rr:16,maxrr:65,noise:0,followplayer:false},
+      {x:250,y:16,speed:2.1,rr:16,maxrr:65,noise:20,followplayer:false},
+      {x:350,y:150,speed:1.9,rr:16,maxrr:65,noise:40,followplayer:false},
+      {x:450,y:16,speed:1.8,rr:16,maxrr:65,noise:60,followplayer:false},
+      {x:550,y:16,speed:2,rr:16,maxrr:150,noise:80,followplayer:false},
+      {x:650,y:16,speed:1.7,rr:16,maxrr:65,noise:170,followplayer:false},
+    ],obstacles:[
+      {x:150,y:400,type:'rect',width:50,height:innerHeight-400,color:'white'},
+      {x:400,y:0,type:'rect',width:50,height:400,color:'white'}
     ]
   }
 ]);
