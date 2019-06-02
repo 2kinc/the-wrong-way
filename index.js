@@ -125,19 +125,42 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
       that.player.y = that.hideouts[0].y;
       var maxpoints = 0;
       that.hideouts.forEach(function(i) {i.clctd = false;maxpoints+=i.points;});
-      that.levels[that.currentLevel+1].locked = false;
-      $($('#levels').children()[that.currentLevel+1]).prop("disabled",false);
       if (that.points > maxpoints*(1/4)) {
         $($('#stars').children()[0]).css('fill','yellow');
       } if (that.points > maxpoints*(1/2)) {
-        $($('#stars').children()[0]).css('fill','yellow');
         $($('#stars').children()[1]).css('fill','yellow');
       } if (that.points > maxpoints*(3/4)) {
-        $($('#stars').children()[0]).css('fill','yellow');
-        $($('#stars').children()[1]).css('fill','yellow');
         $($('#stars').children()[2]).css('fill','yellow');
       }
+      if (that.points > that.levels[that.currentLevel].highscore) that.levels[that.currentLevel].highscore = that.points;
       that.points = 0;
+      that.levels[that.currentLevel+1].locked = false;
+      $($('#levels').children()[that.currentLevel+1]).prop("disabled",false);
+      noise.seed(Math.random());
+      that.elems.levels.html('');
+      that.levels.forEach(function(a,b) {
+        el = $('<button class="levelsbutton" id="level'+(b+1)+'"">'+(b+1)+'<br><span style=""><svg style="fill: rgba(0,0,0,0.4);width: 20px;height: 20px;"><path d="M 10.000 15.000L 15.878 18.090L 14.755 11.545L 19.511 6.910L 12.939 5.955L 10.000 0.000L 7.061 5.955L 0.489 6.910L 5.245 11.545L 4.122 18.090L 10.000 15.000"></path></svg><svg style="fill: rgba(0,0,0,0.4);width: 20px;height: 20px;"><path d="M 10.000 15.000L 15.878 18.090L 14.755 11.545L 19.511 6.910L 12.939 5.955L 10.000 0.000L 7.061 5.955L 0.489 6.910L 5.245 11.545L 4.122 18.090L 10.000 15.000"></path></svg><svg style="fill: rgba(0,0,0,0.4);width: 20px;height: 20px;"><path d="M 10.000 15.000L 15.878 18.090L 14.755 11.545L 19.511 6.910L 12.939 5.955L 10.000 0.000L 7.061 5.955L 0.489 6.910L 5.245 11.545L 4.122 18.090L 10.000 15.000"></path></svg> </span></button>');
+        if (a.locked) el.prop("disabled",true);
+        that.elems.levels.append(el);
+        var maxpoints = 0;
+        a.hideouts.forEach(function(i){i.clctd = false;maxpoints+=i.points;});
+        if (a.highscore > maxpoints*(1/4)) {
+          console.log($('#level'+(b+1)+' span').children()[0])
+          $($('#level'+(b+1)+' span').children()[0]).css('fill','yellow');
+        } if (a.highscore > maxpoints*(1/2)) {
+          $($('#level'+(b+1)+' span').children()[1]).css('fill','yellow');
+        } if (a.highscore > maxpoints*(3/4)) {
+          $($('#level'+(b+1)+' span').children()[2]).css('fill','yellow');
+        }
+      });
+      $('.levelsbutton').each(function(a,b) {
+        $(b).click(function(){
+          that.Level(that.levels[a]);
+          that.currentLevel = a;
+          that.elems.levels.hide();
+          that.elems.game.show();
+        });
+      });
       return;
     } if (that.player.y < that.player.radius) {
       that.player.y = that.player.radius;
@@ -166,6 +189,7 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
       var move = true;
       that.obstacles.forEach(function (i) {
           if (i.type == 'rect') if (that.rectcirclecoll(that.player,i) && !((i.x+i.width)-(that.player.x) < 0)) move = false;
+          if (i.pushable && that.rectcirclecoll(that.player,i)) {move=true;i.x+=2;}
       });
       if (move) that.player.x += 2;
     }
@@ -184,8 +208,17 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
     that.elems.levels.show();
   });
   this.levels.forEach(function(a,b) {
-    el = $('<button class="levelsbutton">'+(b+1)+'</button>');
-    if (a.locked) el.prop("disabled",true)
+    el = $('<button class="levelsbutton" id="level'+(b+1)+'">'+(b+1)+'<br><span style=""><svg style="fill: rgba(0,0,0,0.4);width: 20px;height: 20px;"><path d="M 10.000 15.000L 15.878 18.090L 14.755 11.545L 19.511 6.910L 12.939 5.955L 10.000 0.000L 7.061 5.955L 0.489 6.910L 5.245 11.545L 4.122 18.090L 10.000 15.000"></path></svg><svg style="fill: rgba(0,0,0,0.4);width: 20px;height: 20px;"><path d="M 10.000 15.000L 15.878 18.090L 14.755 11.545L 19.511 6.910L 12.939 5.955L 10.000 0.000L 7.061 5.955L 0.489 6.910L 5.245 11.545L 4.122 18.090L 10.000 15.000"></path></svg><svg style="fill: rgba(0,0,0,0.4);width: 20px;height: 20px;"><path d="M 10.000 15.000L 15.878 18.090L 14.755 11.545L 19.511 6.910L 12.939 5.955L 10.000 0.000L 7.061 5.955L 0.489 6.910L 5.245 11.545L 4.122 18.090L 10.000 15.000"></path></svg> </span></button>');
+    if (a.locked) el.prop("disabled",true);
+    var maxpoints = 0;
+    a.hideouts.forEach(function(i){i.clctd = false;maxpoints+=i.points;});
+    if (a.highscore > maxpoints*(1/4)) {
+      $($('#level'+(b+1)+' span').children()[0]).css('fill','yellow');
+    } if (a.highscore > maxpoints*(1/2)) {
+      $($('#level'+(b+1)+' span').children()[1]).css('fill','yellow');
+    } if (a.highscore > maxpoints*(3/4)) {
+      $($('#level'+(b+1)+' span').children()[2]).css('fill','yellow');
+    }
     that.elems.levels.append(el);
   });
   $('#redobtn').click(function() {
@@ -208,13 +241,14 @@ function Game(T,h,e_,W,r,o,n,g,__,w,a,y) {
       that.elems.levels.hide();
       that.elems.game.show();
     });
-  })
+  });
 }
 var game = new Game('#333', [
   {
     completed:false,
     locked:false,
     points:0,
+    highscore:0,
     player:{
       x:40,
       y:250,
@@ -238,16 +272,49 @@ var game = new Game('#333', [
       {x:450,y:16,speed:4,rr:16,maxrr:62,noise:60,followplayer:false},
       {x:550,y:16,speed:7,rr:16,maxrr:62,noise:80,followplayer:false},
       {x:650,y:16,speed:5,rr:16,maxrr:62,noise:100,followplayer:false},
+    ],obstacles:[]
+  },{
+    completed:false,
+    locked:true,
+    points:0,
+    highscore:0,
+    player:{
+      x:80,
+      y:250,
+      color:[210,53,80],
+      radius:14,
+      radarRadius:14,
+      maxRadRadius:60,
+      safe:false,
+    },hideouts:[
+      {x:40,y:250,points:0,clctd:false},
+      {x:100,y:200,points:20,clctd:false},
+      {x:200,y:300,points:20,clctd:false},
+      {x:300,y:500,points:20,clctd:false},
+      {x:400,y:400,points:30,clctd:false},
+      {x:500,y:100,points:40,clctd:false},
+      {x:600,y:600,points:20,clctd:false},
+      {x:50,y:600,points:20,clctd:false},
+    ],watchers:[
+      {x:150,y:16,speed:2.2,rr:16,maxrr:65,noise:0,followplayer:false},
+      {x:250,y:16,speed:2.1,rr:16,maxrr:65,noise:20,followplayer:false},
+      {x:350,y:16,speed:1.9,rr:16,maxrr:65,noise:40,followplayer:false},
+      {x:450,y:16,speed:1.8,rr:16,maxrr:65,noise:60,followplayer:false},
+      {x:550,y:16,speed:2,rr:16,maxrr:150,noise:80,followplayer:false},
+      {x:650,y:16,speed:1.7,rr:16,maxrr:65,noise:170,followplayer:false},
+      {x:1050,y:16,speed:1.0,rr:16,maxrr:65,noise:170,followplayer:false},
     ],obstacles:[
-
+      {x:150,y:400,type:'rect',width:50,height:1000,color:'#9e9e9e',pushable:false},
+      {x:150,y:0,type:'rect',width:50,height:300,color:'#9e9e9e',pushable:false}
     ]
   },{
     completed:false,
     locked:true,
     points:0,
+    highscore:0,
     player:{
-      x:40,
-      y:250,
+      x:60,
+      y:200,
       color:[210,53,80],
       radius:14,
       radarRadius:14,
@@ -264,13 +331,15 @@ var game = new Game('#333', [
     ],watchers:[
       {x:150,y:16,speed:2.2,rr:16,maxrr:65,noise:0,followplayer:false},
       {x:250,y:16,speed:2.1,rr:16,maxrr:65,noise:20,followplayer:false},
-      {x:350,y:150,speed:1.9,rr:16,maxrr:65,noise:40,followplayer:false},
+      {x:350,y:16,speed:1.9,rr:16,maxrr:65,noise:40,followplayer:false},
       {x:450,y:16,speed:1.8,rr:16,maxrr:65,noise:60,followplayer:false},
       {x:550,y:16,speed:2,rr:16,maxrr:150,noise:80,followplayer:false},
       {x:650,y:16,speed:1.7,rr:16,maxrr:65,noise:170,followplayer:false},
+      {x:1050,y:16,speed:1.0,rr:16,maxrr:65,noise:170,followplayer:false},
     ],obstacles:[
-      {x:150,y:400,type:'rect',width:50,height:innerHeight-400,color:'white'},
-      {x:400,y:0,type:'rect',width:50,height:400,color:'white'}
+      {x:150,y:700,type:'rect',width:50,height:1000,color:'#9e9e9e',pushable:false},
+      {x:150,y:0,type:'rect',width:50,height:400,color:'#9e9e9e',pushable:false},
+      {x:150,y:400,type:'rect',width:50,height:300,color:'#3f51b5',pushable:true}
     ]
   }
 ]);
